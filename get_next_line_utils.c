@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 00:21:05 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/18 22:21:31 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/18 22:52:40 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	int		i;
 
 	if (!s1)
-		free(s2);
+		free((void *)s2);
 	if (!s1 || !s2)
 		return (NULL);
 	len_s1 = ft_strclen(s1, 0);
