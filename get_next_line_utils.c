@@ -6,36 +6,19 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 00:21:05 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/18 14:15:12 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/18 22:21:31 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char	*ft_strcpy(char *dst, const char *src)
-{
-	int	i;
-	int	dst_len;
-
-	if (!dst || !src)
-		return (NULL);
-	i = 0;
-	dst_len = 0;
-	while (dst[dst_len])
-		dst_len++;
-	while (src[i])
-	{
-		dst[dst_len + i] = src[i];
-		i++;
-	}
-	return (dst);
-}
 
 void	*ft_calloc(size_t count, size_t size)
 {
 	size_t	i;
 	void	*arr;
 
+	if (!count || !size)
+		return (malloc(0));
 	if (size != 0 && count > ~(size_t)0 / size)
 		return (NULL);
 	arr = malloc(count * size);
@@ -65,17 +48,21 @@ int	ft_strclen(const char *str, int ch)
 			return (i);
 		i++;
 	}
+	if (str[i] == ch)
+		return (i);
 	return (-1);
 }
 
-char	*ft_strcjoin(const char *s1, const char *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
 	int		len_s1;
 	int		len_s2;
 	char	*arr;
 	int		i;
 
-	if (!s1 || ! s2)
+	if (!s1)
+		free(s2);
+	if (!s1 || !s2)
 		return (NULL);
 	len_s1 = ft_strclen(s1, 0);
 	len_s2 = ft_strclen(s2, 0);
@@ -93,4 +80,25 @@ char	*ft_strcjoin(const char *s1, const char *s2)
 	free((void *)s2);
 	arr[i] = '\0';
 	return (arr);
+}
+
+
+char	*ft_strdup(const char *string, char ch)
+{
+	int		len;
+	int		i;
+	char	*new_arr;
+
+	len = 0;
+	while (string[len] != ch)
+		len++;
+	if (ch != '\0')
+		len++;
+	new_arr = (char *)ft_calloc(len + 1, 1);
+	if (!new_arr)
+		return (NULL);
+	i = -1;
+	while (++i < len)
+		new_arr[i] = string[i];
+	return (new_arr);
 }
