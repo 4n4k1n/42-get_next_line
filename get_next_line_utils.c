@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 00:21:05 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/18 22:52:40 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/18 23:54:16 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	ft_strclen(const char *str, int ch)
 	int	i;
 
 	if (!str)
-		return (-1);
+		return (NOT_FOUND);
 	if (ch == -1)
 		ch = '\0';
 	i = 0;
@@ -50,7 +50,7 @@ int	ft_strclen(const char *str, int ch)
 	}
 	if (str[i] == ch)
 		return (i);
-	return (-1);
+	return (NOT_FOUND);
 }
 
 char	*ft_strjoin(const char *s1, const char *s2)
@@ -60,9 +60,9 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	char	*arr;
 	int		i;
 
+	if (!s2)
+		return ((char *)s1);
 	if (!s1)
-		free((void *)s2);
-	if (!s1 || !s2)
 		return (NULL);
 	len_s1 = ft_strclen(s1, 0);
 	len_s2 = ft_strclen(s2, 0);
@@ -77,11 +77,10 @@ char	*ft_strjoin(const char *s1, const char *s2)
 		else
 			arr[i] = s2[i - len_s1];
 	}
+	free((void *)s1);
 	free((void *)s2);
-	arr[i] = '\0';
 	return (arr);
 }
-
 
 char	*ft_strdup(const char *string, char ch)
 {
@@ -89,10 +88,12 @@ char	*ft_strdup(const char *string, char ch)
 	int		i;
 	char	*new_arr;
 
+	if (!string || !*string)
+		return (ft_calloc(1, 1));
 	len = 0;
-	while (string[len] != ch)
+	while (string[len] && string[len] != ch)
 		len++;
-	if (ch != '\0')
+	if (ch != '\0' && string[len] == ch)
 		len++;
 	new_arr = (char *)ft_calloc(len + 1, 1);
 	if (!new_arr)
