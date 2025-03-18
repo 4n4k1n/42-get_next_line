@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 00:21:05 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/17 13:36:39 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/18 14:15:12 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ char	*ft_strcpy(char *dst, const char *src)
 	if (!dst || !src)
 		return (NULL);
 	i = 0;
+	dst_len = 0;
 	while (dst[dst_len])
 		dst_len++;
 	while (src[i])
@@ -49,9 +50,9 @@ void	*ft_calloc(size_t count, size_t size)
 	return (arr);
 }
 
-ssize_t	ft_strclen(const char *str, ssize_t ch)
+int	ft_strclen(const char *str, int ch)
 {
-	ssize_t	i;
+	int	i;
 
 	if (!str)
 		return (-1);
@@ -67,7 +68,7 @@ ssize_t	ft_strclen(const char *str, ssize_t ch)
 	return (-1);
 }
 
-char	*ft_strcjoin(char const *s1, char const *s2)
+char	*ft_strcjoin(const char *s1, const char *s2)
 {
 	int		len_s1;
 	int		len_s2;
@@ -89,7 +90,7 @@ char	*ft_strcjoin(char const *s1, char const *s2)
 		else
 			arr[i] = s2[i - len_s1];
 	}
-	free(s2);
+	free((void *)s2);
 	arr[i] = '\0';
 	return (arr);
 }
