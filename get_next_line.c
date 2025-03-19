@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 09:43:56 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:01:28 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ char	*ft_check_buffer(char *buffer)
 char	*ft_find_newline_recursive(int fd, char *buffer, char *str, int *error)
 {
 	char	*temp;
+	char	*new;
 
 	temp = ft_read_file_until_newline(fd, buffer, error);
 	if (!temp)
@@ -53,7 +54,10 @@ char	*ft_find_newline_recursive(int fd, char *buffer, char *str, int *error)
 		}
 		return (str);
 	}
-	return (ft_strjoin(str, temp));
+	new = ft_strjoin(str, temp);
+	if (!new)
+		*error = 1;
+	return (new);
 }
 
 char	*ft_read_file_until_newline(int fd, char *buffer, int *error)
@@ -71,7 +75,10 @@ char	*ft_read_file_until_newline(int fd, char *buffer, int *error)
 	buffer[len] = '\0';
 	str = ft_check_buffer(buffer);
 	if (!str)
+	{
+		*error = 1;
 		return (NULL);
+	}
 	if (ft_strclen(str, '\n') == NOT_FOUND && len == BUFFER_SIZE)
 		return (ft_find_newline_recursive(fd, buffer, str, error));
 	return (str);

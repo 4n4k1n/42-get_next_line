@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 00:21:05 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 05:27:34 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/19 09:24:44 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,17 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	char	*arr;
 	int		i;
 
-	if (!s2)
-		return ((char *)s1);
-	if (!s1)
+	if (!s1 && !s2)
 		return (NULL);
+	if (!s1)
+		return (free((void *)s2), NULL);
+	if (!s2)
+		return (free((void *)s1), NULL);
 	len_s1 = ft_strclen(s1, 0);
 	len_s2 = ft_strclen(s2, 0);
 	arr = (char *)ft_calloc(len_s1 + len_s2 + 1, 1);
 	if (!arr)
-		return (NULL);
+		return (free((void *)s1), free((void *)s2), NULL);
 	i = -1;
 	while (++i < len_s1 + len_s2)
 	{
