@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 02:48:42 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/19 09:43:56 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,10 @@ char	*get_next_line(int fd)
 		return (str);
 	}
 	str = ft_strjoin(str, ft_read_file_until_newline(fd, buffer, &error_check));
-	if (!str || !*str || error_check)
-	{
-		free(str);
+	if (!str)
 		return (NULL);
-	}
+	if (!*str || error_check)
+		return (free(str), NULL);
 	ft_remove_garbage(buffer);
 	return (str);
 }
