@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/18 23:50:38 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/19 02:48:42 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,19 @@ void	ft_remove_garbage(char *buffer)
 
 	check = ft_strclen(buffer, '\n');
 	if (check == NOT_FOUND)
-		return ;
-	i = 0;
-	while (buffer[i + check + 1])
 	{
-		buffer[i] = buffer[i + check + 1];
-		i++;
+		buffer[0] = '\0';
+		return ;
 	}
+	i = -1;
+	while (buffer[++i + check + 1])
+		buffer[i] = buffer[i + check + 1];
 	buffer[i] = '\0';
 }
 
 char	*ft_check_buffer(char *buffer)
 {
-	int		check;
+	int	check;
 
 	check = ft_strclen(buffer, '\n');
 	if (check != NOT_FOUND)
@@ -39,15 +39,33 @@ char	*ft_check_buffer(char *buffer)
 	return (ft_strdup(buffer, '\0'));
 }
 
-char	*ft_read_file(int fd, char *buffer)
+char	*ft_find_newline_recursive(int fd, char *buffer, char *str, int *error)
+{
+	char	*temp;
+
+	temp = ft_read_file_until_newline(fd, buffer, error);
+	if (!temp)
+	{
+		if (*error)
+		{
+			free(str);
+			return (NULL);
+		}
+		return (str);
+	}
+	return (ft_strjoin(str, temp));
+}
+
+char	*ft_read_file_until_newline(int fd, char *buffer, int *error)
 {
 	char	*str;
 	int		len;
 
 	len = read(fd, buffer, BUFFER_SIZE);
-	if (len <= 0)
+	if (len == -1)
 	{
 		buffer[0] = '\0';
+		*error = 1;
 		return (NULL);
 	}
 	buffer[len] = '\0';
@@ -55,7 +73,7 @@ char	*ft_read_file(int fd, char *buffer)
 	if (!str)
 		return (NULL);
 	if (ft_strclen(str, '\n') == NOT_FOUND && len == BUFFER_SIZE)
-		return (ft_strjoin(str, ft_read_file(fd, buffer)));
+		return (ft_find_newline_recursive(fd, buffer, str, error));
 	return (str);
 }
 
@@ -63,7 +81,9 @@ char	*get_next_line(int fd)
 {
 	static char	buffer[BUFFER_SIZE + 1] = {0};
 	char		*str;
+	int			error_check;
 
+	error_check = 0;
 	if (fd < 0 || !BUFFER_SIZE)
 		return (NULL);
 	str = ft_check_buffer(buffer);
@@ -74,8 +94,8 @@ char	*get_next_line(int fd)
 		ft_remove_garbage(buffer);
 		return (str);
 	}
-	str = ft_strjoin(str, ft_read_file(fd, buffer));
-	if (!str || !*str)
+	str = ft_strjoin(str, ft_read_file_until_newline(fd, buffer, &error_check));
+	if (!str || !*str || error_check)
 	{
 		free(str);
 		return (NULL);

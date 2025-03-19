@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 22:54:28 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/18 21:45:43 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/19 02:49:14 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <limits.h>
 # include <stdio.h>
 
-char	*ft_read_file(int fd, char *buffer);
+char	*ft_read_file_until_newline(int fd, char *buffer, int *read_error);
 char	*get_next_line(int fd);
 
 char	*ft_strjoin(const char *s1, const char *s2);
