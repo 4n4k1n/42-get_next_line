@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/20 12:39:08 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:52:17 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	ft_read_in_buffer(int fd, char *buffer, int *active)
 		*active = 0;
 	if (check >= 0)
 		buffer[check] = '\0';
+	else
+		buffer[0] = '\0';
 	return (check);
 }
 
@@ -84,7 +86,7 @@ char	*ft_read_line(int fd, char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[FOPEN_MAX][BUFFER_SIZE + 1] = {0};
+	static char	buffer[OPEN_MAX][BUFFER_SIZE + 1] = {0};
 	char		*str;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/20 02:15:11 by anakin           ###   ########.fr       */
+/*   Updated: 2025/03/20 12:54:09 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	ft_read_in_buffer(int fd, char *buffer, int *active)
 		*active = 0;
 	if (check >= 0)
 		buffer[check] = '\0';
+	else
+		buffer[0] = '\0';
 	return (check);
 }
 
