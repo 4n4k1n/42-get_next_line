@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 22:54:28 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 09:29:19 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/20 01:58:30 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ char	*ft_strjoin(const char *s1, const char *s2);
 int		ft_strclen(const char *str, int ch);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_strdup(const char *string, char ch);
+void	*ft_check_str(char *str);
 
 #endif

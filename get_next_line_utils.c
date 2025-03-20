@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 00:21:05 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 09:24:44 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/20 01:58:14 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	*ft_calloc(size_t count, size_t size)
 	void	*arr;
 
 	if (!count || !size)
-		return (malloc(0));
+		return (malloc(1));
 	if (size != 0 && count > ~(size_t)0 / size)
 		return (NULL);
 	arr = malloc(count * size);
@@ -60,12 +60,8 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	char	*arr;
 	int		i;
 
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s1)
-		return (free((void *)s2), NULL);
-	if (!s2)
-		return (free((void *)s1), NULL);
+	if (!s1 || !s2)
+		return (free((void *)s1), free((void *)s2), NULL);
 	len_s1 = ft_strclen(s1, 0);
 	len_s2 = ft_strclen(s2, 0);
 	arr = (char *)ft_calloc(len_s1 + len_s2 + 1, 1);
@@ -104,4 +100,11 @@ char	*ft_strdup(const char *string, char ch)
 	while (++i < len)
 		new_arr[i] = string[i];
 	return (new_arr);
+}
+
+void	*ft_check_str(char *str)
+{
+	if (!(*str))
+		return (free((void *)str), NULL);
+	return (str);
 }
