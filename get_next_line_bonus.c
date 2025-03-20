@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 10:12:19 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/20 03:04:59 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,26 +86,26 @@ char	*ft_read_file_until_newline(int fd, char *buffer, int *error)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[OPEN_MAX][BUFFER_SIZE + 1] = {0};
+	static char	buffer[FOPEN_MAX][BUFFER_SIZE + 1] = {0};
 	char		*str;
 	int			error;
 
 	error = 0;
 	if (fd < 0 || !BUFFER_SIZE)
 		return (NULL);
-	str = ft_check_buffer(*buffer);
+	str = ft_check_buffer(buffer[fd]);
 	if (!str)
 		return (NULL);
-	if (ft_strclen(*buffer, '\n') != NOT_FOUND)
+	if (ft_strclen(buffer[fd], '\n') != NOT_FOUND)
 	{
-		ft_remove_garbage(*buffer);
+		ft_remove_garbage(buffer[fd]);
 		return (str);
 	}
-	str = ft_strjoin(str, ft_read_file_until_newline(fd, *buffer, &error));
+	str = ft_strjoin(str, ft_read_file_until_newline(fd, buffer[fd], &error));
 	if (!str)
 		return (NULL);
 	if (!*str || error)
 		return (free(str), NULL);
-	ft_remove_garbage(*buffer);
+	ft_remove_garbage(buffer[fd]);
 	return (str);
 }
