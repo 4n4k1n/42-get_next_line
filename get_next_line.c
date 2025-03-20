@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/19 11:01:28 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/20 02:00:03 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,79 +33,62 @@ char	*ft_check_buffer(char *buffer)
 {
 	int	check;
 
+	if (!buffer[0])
+		return (ft_calloc(1, 1));
 	check = ft_strclen(buffer, '\n');
 	if (check != NOT_FOUND)
 		return (ft_strdup(buffer, '\n'));
 	return (ft_strdup(buffer, '\0'));
 }
 
-char	*ft_find_newline_recursive(int fd, char *buffer, char *str, int *error)
+int	ft_read_in_buffer(int fd, char *buffer, int *active)
 {
-	char	*temp;
-	char	*new;
+	int	check;
 
-	temp = ft_read_file_until_newline(fd, buffer, error);
-	if (!temp)
-	{
-		if (*error)
-		{
-			free(str);
-			return (NULL);
-		}
-		return (str);
-	}
-	new = ft_strjoin(str, temp);
-	if (!new)
-		*error = 1;
-	return (new);
+	check = read(fd, buffer, BUFFER_SIZE);
+	if (check != BUFFER_SIZE)
+		*active = 0;
+	if (check >= 0)
+		buffer[check] = '\0';
+	return (check);
 }
 
-char	*ft_read_file_until_newline(int fd, char *buffer, int *error)
+char	*ft_read_line(int fd, char *buffer)
 {
 	char	*str;
-	int		len;
+	char	*temp;
+	int		active;
+	int		read_result;
 
-	len = read(fd, buffer, BUFFER_SIZE);
-	if (len == -1)
-	{
-		buffer[0] = '\0';
-		*error = 1;
-		return (NULL);
-	}
-	buffer[len] = '\0';
+	active = 1;
 	str = ft_check_buffer(buffer);
 	if (!str)
-	{
-		*error = 1;
 		return (NULL);
+	while (ft_strclen(str, '\n') == NOT_FOUND && active)
+	{
+		read_result = ft_read_in_buffer(fd, buffer, &active);
+		if (read_result == -1)
+			return (free(str), NULL);
+		if (read_result == 0 && !*str)
+			return (free(str), NULL);
+		temp = ft_check_buffer(buffer);
+		if (!temp)
+			return (free(str), NULL);
+		str = ft_strjoin(str, temp);
+		if (!str)
+			return (NULL);
 	}
-	if (ft_strclen(str, '\n') == NOT_FOUND && len == BUFFER_SIZE)
-		return (ft_find_newline_recursive(fd, buffer, str, error));
-	return (str);
+	ft_remove_garbage(buffer);
+	return (ft_check_str(str));
 }
 
 char	*get_next_line(int fd)
 {
 	static char	buffer[BUFFER_SIZE + 1] = {0};
 	char		*str;
-	int			error_check;
 
-	error_check = 0;
-	if (fd < 0 || !BUFFER_SIZE)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	str = ft_check_buffer(buffer);
-	if (!str)
-		return (NULL);
-	if (ft_strclen(buffer, '\n') != NOT_FOUND)
-	{
-		ft_remove_garbage(buffer);
-		return (str);
-	}
-	str = ft_strjoin(str, ft_read_file_until_newline(fd, buffer, &error_check));
-	if (!str)
-		return (NULL);
-	if (!*str || error_check)
-		return (free(str), NULL);
-	ft_remove_garbage(buffer);
+	str = ft_read_line(fd, buffer);
 	return (str);
 }
