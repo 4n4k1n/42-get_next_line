@@ -12,33 +12,12 @@
 
 #include "get_next_line.h"
 
-void	*ft_calloc(size_t count, size_t size)
-{
-	size_t	i;
-	void	*arr;
-
-	if (!count || !size)
-		return (malloc(1));
-	if (size != 0 && count > ~(size_t)0 / size)
-		return (NULL);
-	arr = malloc(count * size);
-	if (!arr)
-		return (NULL);
-	i = 0;
-	while (i < (size * count))
-	{
-		((unsigned char *)arr)[i] = 0;
-		i++;
-	}
-	return (arr);
-}
-
 int	ft_strclen(const char *str, int ch)
 {
 	int	i;
 
 	if (!str)
-		return (NOT_FOUND);
+		return (-1);
 	if (ch == -1)
 		ch = '\0';
 	i = 0;
@@ -50,61 +29,37 @@ int	ft_strclen(const char *str, int ch)
 	}
 	if (str[i] == ch)
 		return (i);
-	return (NOT_FOUND);
+	return (-1);
 }
 
-char	*ft_strjoin(const char *s1, const char *s2)
+void	ft_cpy_buffer(char *buffer, char *buf)
 {
-	int		len_s1;
-	int		len_s2;
-	char	*arr;
-	int		i;
+	int	i;
 
-	if (!s1 || !s2)
-		return (free((void *)s1), free((void *)s2), NULL);
-	len_s1 = ft_strclen(s1, 0);
-	len_s2 = ft_strclen(s2, 0);
-	arr = (char *)ft_calloc(len_s1 + len_s2 + 1, 1);
-	if (!arr)
-		return (free((void *)s1), free((void *)s2), NULL);
-	i = -1;
-	while (++i < len_s1 + len_s2)
+	i = 0;
+	while (buf[i])
 	{
-		if (i < len_s1)
-			arr[i] = s1[i];
-		else
-			arr[i] = s2[i - len_s1];
+		buffer[i] = buf[i];
+		i++;
 	}
-	free((void *)s1);
-	free((void *)s2);
-	return (arr);
+	buffer[i] = '\0';
 }
 
-char	*ft_strdup(const char *string, char ch)
+char	*ft_strcpy(char *dst, const char *src)
 {
-	int		len;
-	int		i;
-	char	*new_arr;
+	int	len;
+	int	i;
 
-	if (!string || !*string)
-		return (ft_calloc(1, 1));
 	len = 0;
-	while (string[len] && string[len] != ch)
+	while (src[len])
 		len++;
-	if (ch != '\0' && string[len] == ch)
-		len++;
-	new_arr = (char *)ft_calloc(len + 1, 1);
-	if (!new_arr)
-		return (NULL);
-	i = -1;
-	while (++i < len)
-		new_arr[i] = string[i];
-	return (new_arr);
+	i = 0;
+	while (i < len)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dst);
 }
 
-void	*ft_check_str(char *str)
-{
-	if (!(*str))
-		return (free((void *)str), NULL);
-	return (str);
-}

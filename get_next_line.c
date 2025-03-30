@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:13:40 by apregitz          #+#    #+#             */
-/*   Updated: 2025/03/20 12:54:09 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/03/29 22:27:25 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_remove_garbage(char *buffer)
 	int	check;
 
 	check = ft_strclen(buffer, '\n');
-	if (check == NOT_FOUND)
+	if (check == -1)
 	{
 		buffer[0] = '\0';
 		return ;
@@ -29,25 +29,11 @@ void	ft_remove_garbage(char *buffer)
 	buffer[i] = '\0';
 }
 
-char	*ft_check_buffer(char *buffer)
-{
-	int	check;
-
-	if (!buffer[0])
-		return (ft_calloc(1, 1));
-	check = ft_strclen(buffer, '\n');
-	if (check != NOT_FOUND)
-		return (ft_strdup(buffer, '\n'));
-	return (ft_strdup(buffer, '\0'));
-}
-
-int	ft_read_in_buffer(int fd, char *buffer, int *active)
+int	ft_read_in_buffer(int fd, char *buffer)
 {
 	int	check;
 
 	check = read(fd, buffer, BUFFER_SIZE);
-	if (check != BUFFER_SIZE)
-		*active = 0;
 	if (check >= 0)
 		buffer[check] = '\0';
 	else
@@ -55,42 +41,60 @@ int	ft_read_in_buffer(int fd, char *buffer, int *active)
 	return (check);
 }
 
-char	*ft_read_line(int fd, char *buffer)
+char	*ft_alloc_str(int len, int cpy_len)
 {
 	char	*str;
-	char	*temp;
-	int		active;
-	int		read_result;
 
-	active = 1;
-	str = ft_check_buffer(buffer);
+	str = malloc(len + 1);
 	if (!str)
 		return (NULL);
-	while (ft_strclen(str, '\n') == NOT_FOUND && active)
+	str[len] = '\0';
+	return (str);
+}
+
+char	*ft_fill_str(char *str, char *buffer, int str_start, int len)
+{
+	int	i;
+
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (i < len)
 	{
-		read_result = ft_read_in_buffer(fd, buffer, &active);
-		if (read_result == -1)
-			return (free(str), NULL);
-		if (read_result == 0 && !*str)
-			return (free(str), NULL);
-		temp = ft_check_buffer(buffer);
-		if (!temp)
-			return (free(str), NULL);
-		str = ft_strjoin(str, temp);
-		if (!str)
-			return (NULL);
+		str[str_start +i] = buffer[i];
+		i++;
 	}
-	ft_remove_garbage(buffer);
-	return (ft_check_str(str));
+	return (str);
+}
+
+char	*ft_search_newline(int	fd, char *buffer, int len)
+{
+	int	bytes;
+	int	check;
+	char	buf[BUFFER_SIZE + 1];
+
+	bytes = ft_read_in_buffer(fd, buf);
+	if (bytes == -1)
+		return (NULL);
+	check = ft_strclen(buf, '\n');
+	if (check == -1 && bytes == BUFFER_SIZE)
+		return (ft_fill_str(ft_search_newline(fd, buf, len + bytes), buf, len, bytes));
+	ft_strcpy(buffer, buf);
+	if (check >= 0)
+		bytes = check;
+	return (ft_fill_str(ft_alloc_str(len + bytes), buffer, len, bytes));
 }
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1] = {0};
+	static char	buffer[BUFFER_SIZE + 1];
 	char		*str;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	str = ft_read_line(fd, buffer);
+	str = ft_search_newline(fd, buffer, 0);
+	if (!str)
+		return (NULL);
+	ft_remove_garbage(buffer);
 	return (str);
 }
